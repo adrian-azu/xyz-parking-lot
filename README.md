@@ -20,7 +20,7 @@ npm install
   npm start:dev
 ```
 
-Try requesting with postman http://locahost:3000/test to see get all the APIS
+Try requesting with postman http://locahost:3000/
 
 ## API Reference
 
