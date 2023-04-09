@@ -1,7 +1,7 @@
 const { request, response } = require("express");
 const ParkingSystem = require("../services/parkinglot.services");
 let { parkingObj, extendedTime } = require("../repositories");
-const { VEHICLE_SIZE, DATE_TYPE, TIME_EXTEND } = require("../constants");
+const { VEHICLE_SIZE, DATE_TYPE, TIME_EXTEND, VEHICLE_SIZE_NUM } = require("../constants");
 
 exports.createParkingSlot = (req = request, res = response) => {
   const { slots, entrance } = req.body;
@@ -22,6 +22,9 @@ exports.createParkingSlot = (req = request, res = response) => {
 
 exports.findAvailableSlots = (req, res) => {
   const { size, entrance } = req.body;
+  if (parkingObj.size === 0) {
+    throw new Error("Parking System not created");
+  }
   if (!VEHICLE_SIZE[size.toUpperCase()]) {
     throw new Error("Size not allowed");
   }
@@ -37,10 +40,21 @@ exports.findAvailableSlots = (req, res) => {
 };
 
 exports.checkParkingMap = (req, res) => {
-  if (!parkingObj.size === 0) {
+  if (parkingObj.size === 0) {
     throw new Error("Parking System not created");
   }
-  return res.json({ map: parkingObj.get("parkingObj").checkParkingMap() });
+
+  const parkingMap = parkingObj.get("parkingObj")?.parkingMap;
+  const slots = [];
+  for (const row of parkingMap) {
+    const slotEntrance = [];
+    for (const slotObj of row) {
+      slotEntrance.push(`${slotObj.slot.join("-")} ${VEHICLE_SIZE_NUM[slotObj.size]}`);
+    }
+    slots.push(slotEntrance);
+  }
+
+  return res.json({ map: slots });
 };
 
 exports.fastForward = (req, res) => {

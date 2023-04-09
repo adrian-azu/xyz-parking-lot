@@ -4,6 +4,7 @@ module.exports = Object.freeze({
     M: 1,
     L: 2,
   },
+  VEHICLE_SIZE_NUM: ["S", "M", "L"],
   DATE_TYPE: {
     MINUTES: "minutes",
     HOURS: "hours",
